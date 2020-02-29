@@ -7,6 +7,10 @@
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
+# Set the default GST percentage rate
+gst_percentage = 10  # todo Load percentage rate from a file
+
+
 class Ui_MainWindow(object):
     def setup_ui(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
@@ -42,7 +46,7 @@ class Ui_MainWindow(object):
         self.gstExclusive_lbl.setFont(font)
         self.gstExclusive_lbl.setStyleSheet("background-color:rgb(255,255,255);")
         self.gstExclusive_lbl.setText("")
-        self.gstExclusive_lbl.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.gstExclusive_lbl.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignTrailing | QtCore.Qt.AlignVCenter)
         self.gstExclusive_lbl.setObjectName("gstExclusive_lbl")
         self.totalExclusive_lbl = QtWidgets.QLabel(self.centralwidget)
         self.totalExclusive_lbl.setGeometry(QtCore.QRect(380, 170, 100, 25))
@@ -51,7 +55,7 @@ class Ui_MainWindow(object):
         self.totalExclusive_lbl.setFont(font)
         self.totalExclusive_lbl.setStyleSheet("background-color:rgb(255,255,255);")
         self.totalExclusive_lbl.setText("")
-        self.totalExclusive_lbl.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.totalExclusive_lbl.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignTrailing | QtCore.Qt.AlignVCenter)
         self.totalExclusive_lbl.setObjectName("totalExclusive_lbl")
         self.gstInclusive_lbl = QtWidgets.QLabel(self.centralwidget)
         self.gstInclusive_lbl.setGeometry(QtCore.QRect(260, 200, 100, 25))
@@ -60,7 +64,7 @@ class Ui_MainWindow(object):
         self.gstInclusive_lbl.setFont(font)
         self.gstInclusive_lbl.setStyleSheet("background-color:rgb(255,255,255);")
         self.gstInclusive_lbl.setText("")
-        self.gstInclusive_lbl.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.gstInclusive_lbl.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignTrailing | QtCore.Qt.AlignVCenter)
         self.gstInclusive_lbl.setObjectName("gstInclusive_lbl")
         self.totalInclusive_lbl = QtWidgets.QLabel(self.centralwidget)
         self.totalInclusive_lbl.setGeometry(QtCore.QRect(380, 200, 100, 25))
@@ -69,7 +73,7 @@ class Ui_MainWindow(object):
         self.totalInclusive_lbl.setFont(font)
         self.totalInclusive_lbl.setStyleSheet("background-color:rgb(255,255,255);")
         self.totalInclusive_lbl.setText("")
-        self.totalInclusive_lbl.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.totalInclusive_lbl.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignTrailing | QtCore.Qt.AlignVCenter)
         self.totalInclusive_lbl.setObjectName("totalInclusive_lbl")
         self.inputAmount_txt = QtWidgets.QLineEdit(self.centralwidget)
         self.inputAmount_txt.setGeometry(QtCore.QRect(20, 140, 113, 20))
@@ -124,50 +128,63 @@ class Ui_MainWindow(object):
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
-
-    # Event Listeners
-        #todo Events for text input and Change tax rate on menu bar
-       # self.inputAmount_txt.finishediting.connect(self.inputSanitize)
-
-
-
-    # Set the current GST percentage rate
-    gst_percentage = 15  # todo Load percentage rate from a file
-
-
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "GST Calc"))
         self.title_lbl.setText(_translate("MainWindow", "GST Calculator"))
-        self.descrption_lbl.setText(_translate("MainWindow", "Input a figure into the amount box and read off the figures for gst inclusive and exclusive calculations."))
+        self.descrption_lbl.setText(_translate("MainWindow",
+                                               "Input a figure into the amount box and read off the figures for gst inclusive and exclusive calculations."))
         self.inputAmount_txt.setToolTip(_translate("MainWindow", "Input amount either with or without GST"))
         self.amount_lbl.setText(_translate("MainWindow", "Input Amount"))
         self.exclusive_lbl.setText(_translate("MainWindow", "GST Exclusive"))
         self.inclusive_lbl.setText(_translate("MainWindow", "GST Inclusive"))
         self.menuEdit.setTitle(_translate("MainWindow", "Edit"))
-        self.actionEdit_GST_Prcentage.setText(_translate("MainWindow", "Edit GST Prcentage"))
+        self.actionEdit_GST_Prcentage.setText(_translate("MainWindow", "Edit GST Percentage"))
 
+        # Event Listeners
+        # todo Events for text input and Change tax rate on menu bar
+        self.inputAmount_txt.editingFinished.connect(self.inputSanitize)
+
+    def do_calcs(self, final_Amount):
+        gst_factor = gst_percentage / 100 + 1
+        self.totalExclusive_lbl.setText(str(round(final_Amount * gst_factor, 2)))
+        self.gstExclusive_lbl.setText(str(round(final_Amount * gst_percentage / 100, 2)))
+        self.gstInclusive_lbl.setText(str(round(final_Amount - (final_Amount / gst_factor), 2)))
+        self.totalInclusive_lbl.setText(str(round(final_Amount / gst_factor, 2)))
+
+        print("I made it here.")
+        pass  # todo Enter calculations and print results
 
     def inputSanitize(self):
         amount = self.inputAmount_txt.text()
         try:
-            final_Amount = round(float(amount),2)
+            final_Amount = round(float(amount), 2)
             self.do_calcs(final_Amount)
-        except Exception as e:   #todo Handle exceptions properly
-            print('There was a problem '+str(e))
+        except Exception as e:  # todo Handle exceptions properly
+            print('There was a problem ' + str(e))
 
 
+def gstFile():
+    try:
+        with open("gstAmount.txt", "r") as fh:
+            global gst_percentage
+            gst_percentage = float(fh.read())
+    except Exception as e:
+        writeFile()  # if no file is found goto writefile func and create a file
 
-    def do_calcs(final_Amount):
-        pass   #todo Enter calculations and print results
+
+def writeFile():
+    with open("gstAmount.txt", "w") as fh:
+        fh.write(str(gst_percentage))
 
 
 if __name__ == "__main__":
     import sys
+
     app = QtWidgets.QApplication(sys.argv)
     MainWindow = QtWidgets.QMainWindow()
     ui = Ui_MainWindow()
     ui.setup_ui(MainWindow)
+    gstFile()
     MainWindow.show()
     sys.exit(app.exec_())
-
