@@ -147,13 +147,16 @@ class Ui_MainWindow(object):
 
     def do_calcs(self, final_Amount):
         gst_factor = gst_percentage / 100 + 1
-        self.totalExclusive_lbl.setText(str(round(final_Amount * gst_factor, 2)))
-        self.gstExclusive_lbl.setText(str(round(final_Amount * gst_percentage / 100, 2)))
-        self.gstInclusive_lbl.setText(str(round(final_Amount - (final_Amount / gst_factor), 2)))
-        self.totalInclusive_lbl.setText(str(round(final_Amount / gst_factor, 2)))
+        totEx = "${:,.2f}".format(final_Amount * gst_factor)
+        gstEx = "${:,.2f}".format(final_Amount * (gst_percentage / 100))
+        gstInc = "${:,.2f}".format(final_Amount - (final_Amount / gst_factor))
+        totInc = "${:,.2f}".format(final_Amount / gst_factor)
+        self.totalExclusive_lbl.setText(totEx)
+        self.gstExclusive_lbl.setText(gstEx)
+        self.gstInclusive_lbl.setText(gstInc)
+        self.totalInclusive_lbl.setText(totInc)
 
         print("I made it here.")
-        pass  # todo Enter calculations and print results
 
     def inputSanitize(self):
         amount = self.inputAmount_txt.text()
@@ -161,6 +164,7 @@ class Ui_MainWindow(object):
             final_Amount = round(float(amount), 2)
             self.do_calcs(final_Amount)
         except Exception as e:  # todo Handle exceptions properly
+
             print('There was a problem ' + str(e))
 
 
