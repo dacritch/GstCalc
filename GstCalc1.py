@@ -8,7 +8,7 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 # Set the default GST percentage rate
-gst_percentage = 10  # todo Load percentage rate from a file
+gst_percentage = 15  # todo Load percentage rate from a file
 
 
 class Ui_MainWindow(object):
@@ -144,6 +144,7 @@ class Ui_MainWindow(object):
         # Event Listeners
         # todo Events for text input and Change tax rate on menu bar
         self.inputAmount_txt.editingFinished.connect(self.inputSanitize)
+        self.actionEdit_GST_Prcentage.triggered.connect(changeGst)
 
     def do_calcs(self, final_Amount):
         gst_factor = gst_percentage / 100 + 1
@@ -166,6 +167,10 @@ class Ui_MainWindow(object):
         except Exception as e:  # todo Handle exceptions properly
 
             print('There was a problem ' + str(e))
+
+
+def changeGst():
+    print("I'm at the changeGst Method")    # todo Provide functionality for changing the gst rate
 
 
 def gstFile():
