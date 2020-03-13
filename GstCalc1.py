@@ -6,6 +6,7 @@
 # WARNING! All changes made in this file will be lost!
 
 from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtWidgets import QApplication, QMessageBox
 
 # Set the default GST percentage rate
 gst_percentage = 15  # todo Load percentage rate from a file
@@ -142,7 +143,6 @@ class Ui_MainWindow(object):
         self.actionEdit_GST_Prcentage.setText(_translate("MainWindow", "Edit GST Percentage"))
 
         # Event Listeners
-        # todo Events for text input and Change tax rate on menu bar
         self.inputAmount_txt.editingFinished.connect(self.inputSanitize)
         self.actionEdit_GST_Prcentage.triggered.connect(changeGst)
 
@@ -164,8 +164,9 @@ class Ui_MainWindow(object):
         try:
             final_Amount = round(float(amount), 2)
             self.do_calcs(final_Amount)
-        except Exception as e:  # todo Handle exceptions properly
-
+        except Exception as e:
+            QMessageBox.warning(QMessageBox(), "Warning!!", "You have entered incorrect data type")
+            self.inputAmount_txt.clear()
             print('There was a problem ' + str(e))
 
 
