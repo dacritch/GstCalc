@@ -6,7 +6,7 @@
 # WARNING! All changes made in this file will be lost!
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets import QApplication, QMessageBox
+from PyQt5.QtWidgets import QApplication, QMessageBox, QInputDialog
 
 # Set the default GST percentage rate
 gst_percentage = 15  # todo Load percentage rate from a file
@@ -171,8 +171,21 @@ class Ui_MainWindow(object):
 
 
 def changeGst():
-    print("I'm at the changeGst Method")    # todo Provide functionality for changing the gst rate
+    """Change the default GST rate as set in the variable 'gst_percentage
+    An input dialog box opens and accepts the new rate set by the user,
+    this changes the gst_percentage rate and writes the new rate to the
+    gstAmount.txt file"""
 
+    gst, okPressed = QInputDialog.getText(QInputDialog(), 'Change GST', "Please enter the new GST percentage")
+    if okPressed:
+        global gst_percentage
+        gst_percentage = float(gst)
+        answer = QMessageBox.question(QMessageBox(), "Save Changes",
+                                      "Would you like to save the new GST amount for next time",
+                                      QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+        if answer:
+            print("I'm at the changeGst Method")  # todo Provide functionality for changing the gst rate
+            writeFile()
 
 def gstFile():
     try:
@@ -185,6 +198,7 @@ def gstFile():
 
 def writeFile():
     with open("gstAmount.txt", "w") as fh:
+        global gst_percentage
         fh.write(str(gst_percentage))
 
 
