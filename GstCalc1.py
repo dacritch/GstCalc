@@ -9,7 +9,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QApplication, QMessageBox, QInputDialog
 
 # Set the default GST percentage rate
-gst_percentage = 15  # todo Load percentage rate from a file
+gst_percentage = 15  # Default rate
 
 
 class Ui_MainWindow(object):
@@ -183,9 +183,10 @@ def changeGst():
         answer = QMessageBox.question(QMessageBox(), "Save Changes",
                                       "Would you like to save the new GST amount for next time",
                                       QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
-        if answer:
-            print("I'm at the changeGst Method")  # todo Provide functionality for changing the gst rate
+        if answer == QMessageBox.Yes:
+            print("I'm at the changeGst Method")
             writeFile()
+
 
 def gstFile():
     try:
