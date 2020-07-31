@@ -122,8 +122,11 @@ class Ui_MainWindow(object):
         self.statusbar.setObjectName("statusbar")
         MainWindow.setStatusBar(self.statusbar)
         self.actionEdit_GST_Prcentage = QtWidgets.QAction(MainWindow)
+        self.actionClose = QtWidgets.QAction(MainWindow)
         self.actionEdit_GST_Prcentage.setObjectName("actionEdit_GST_Prcentage")
+        self.actionClose.setObjectName("actionClose")
         self.menuEdit.addAction(self.actionEdit_GST_Prcentage)
+        self.menuEdit.addAction(self.actionClose)
         self.menubar.addAction(self.menuEdit.menuAction())
 
         self.retranslateUi(MainWindow)
@@ -141,10 +144,12 @@ class Ui_MainWindow(object):
         self.inclusive_lbl.setText(_translate("MainWindow", "GST Inclusive"))
         self.menuEdit.setTitle(_translate("MainWindow", "Edit"))
         self.actionEdit_GST_Prcentage.setText(_translate("MainWindow", "Edit GST Percentage"))
+        self.actionClose.setText(_translate("MainWindow", "Close App"))
 
         # Event Listeners
         self.inputAmount_txt.editingFinished.connect(self.inputSanitize)
         self.actionEdit_GST_Prcentage.triggered.connect(changeGst)
+        self.actionClose.triggered.connect(lambda: sys.exit(app.exec_()))
 
     def do_calcs(self, final_Amount):
         gst_factor = gst_percentage / 100 + 1
@@ -156,8 +161,6 @@ class Ui_MainWindow(object):
         self.gstExclusive_lbl.setText(gstEx)
         self.gstInclusive_lbl.setText(gstInc)
         self.totalInclusive_lbl.setText(totInc)
-
-        print("I made it here.")
 
     def inputSanitize(self):
         amount = self.inputAmount_txt.text()
